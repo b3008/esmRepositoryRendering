@@ -1,0 +1,27 @@
+{
+  "name": "esmrepositoryrendering",
+  "version": "1.0.0",
+  "description": "Download the .csv with the ESM items at https://osf.io/5ba2c/download",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "tsc",
+    "build": "tsc"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^14.0.27",
+    "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "@types/express": "^4.17.7",
+    "bib2json": "0.0.1",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "csvtojson": "^2.0.10",
+    "express": "^4.17.1",
+    "express-http-proxy": "^1.6.2",
+    "multer": "^1.4.2"
+  }
+}
