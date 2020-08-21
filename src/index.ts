@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 
 app.get("/citations", (req, res) => {
     // console.log("citations: ", citations);
-    res.send(citationKeys);
+    res.send(citations);
 })
 
 app.get("/citations/:index", (req, res) => {

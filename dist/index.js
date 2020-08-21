@@ -22,7 +22,7 @@ app.get("/", (req, res) => {
 });
 app.get("/citations", (req, res) => {
     // console.log("citations: ", citations);
-    res.send(esmRepositoryParser_1.citationKeys);
+    res.send(esmRepositoryParser_1.citations);
 });
 app.get("/citations/:index", (req, res) => {
     res.send(esmRepositoryParser_1.citations[esmRepositoryParser_1.citationKeys[req.params.index]]);

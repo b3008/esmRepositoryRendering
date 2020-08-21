@@ -32,8 +32,7 @@ csv().fromFile('./DATA_ESM_Item_Repository.csv').then((items) => {
         else {
             // create new citation object
             let l = Object.keys(exports.citations).length;
-            if (l == 5)
-                debugger;
+            // if(l==5) debugger;
             let finalDoi;
             if (doi) {
                 finalDoi = `https://doi${cleanupDoi(doi)}`;
@@ -50,7 +49,20 @@ csv().fromFile('./DATA_ESM_Item_Repository.csv').then((items) => {
     // console.log(citations[citationGroups[1]]);
     // let source = generateGroupSource(citations[citationGroups[0]])
     exports.citationKeys = Object.keys(exports.citations);
-    // console.log(source);
+    for (let i = 0; i < exports.citationKeys.length; i++) {
+        exports.citations[exports.citationKeys[i]].itemParseResults = exports.generateCitationSource(exports.citationKeys[i]);
+        let errorCount = 0;
+        for (let j = 0; j < exports.citations[exports.citationKeys[i]].itemParseResults.length; j++) {
+            let parseResult = exports.citations[exports.citationKeys[i]].itemParseResults[j];
+            console.log(parseResult);
+            if (parseResult.hasError) {
+                errorCount++;
+            }
+        }
+        exports.citations[exports.citationKeys[i]].errorCount = errorCount;
+    }
+    console.log(exports.citations[exports.citationKeys[6]]);
+    //  console.log(source);
     // resolve();
     // });
 });
@@ -68,40 +80,65 @@ exports.generateCitationSource = (citationKey) => {
     return generateGroupSource(exports.citations[citationKey]);
 };
 let generateGroupSource = (group) => {
-    let source = "";
+    let source = [];
     for (let i = 0; i < group.items.length; i++) {
         let item = group.items[i];
-        source += `\n${generateItemSource(item)}\n`;
+        source.push(generateItemSource(item));
+        console.log("------------------------ done");
     }
     return source;
 };
 let generateItemSource = (config) => {
     let source = "";
     // console.log(config);
+    let errorType = "none";
     if (config.Item.label) {
         console.log("FOUND X1: ", config);
         source += `${config.Item.label}\n`;
     }
+    let result;
+    let val;
+    let hasError = false;
     if (config.X[1]) {
-        source += `${XProcessorModule_1.xProcessor.X1(config.X[1])}`;
+        result = `${XProcessorModule_1.xProcessor.X1(config.X[1])}`;
+        val = config.X[1];
+        if (!result) {
+            result = `<div class="missingProcessorError">Missing processor for:<br>X.1 = "${config.X[1]}" </div>`;
+            hasError = true;
+            errorType = "processing X.1 returned undefined";
+        }
+        source += result;
     }
     else if (config['Response.scale....anchoring']) {
         console.log(config);
-        let result = `${XProcessorModule_1.xProcessor.responseScale(config['Response.scale....anchoring'])}`;
+        result = `${XProcessorModule_1.xProcessor.responseScale(config['Response.scale....anchoring'])}`;
+        val = config['Response.scale....anchoring'];
         if (!result) {
-            debugger;
+            result = `<div class="missingProcessorError">result was undefined</div>`;
+            hasError = true;
+            errorType = "processing responseScale returned undefined";
         }
         if (result == "undefined") {
-            debugger;
+            result = `<div class="missingProcessorError"> Missing processor for:<br>responseScale = "${config['Response.scale....anchoring']}"</div>`;
+            hasError = true;
+            errorType = "missing processor for response scale";
+        }
+        else {
+            result += `\n<div class="processedInput"> Processed input was:<br>"${config['Response.scale....anchoring']}"</div>`;
+            hasError = false;
         }
         source += result;
     }
     else {
         console.log(config);
-        debugger;
+        hasError = true;
+        errorType = "could not identify response scale";
+        source += `\n<div class="missingScale"> Could not identify response scale</div>`;
+        // debugger;
     }
-    console.log("NO X1: ", config);
-    console.log(source);
-    return source;
+    // console.log("NO X1: ", config);
+    // console.log(source);
+    let renderHtml = `<div class="item"> ${source} </div>`;
+    return { html: source, renderHtml: renderHtml, hasError, errorType };
 };
 //# sourceMappingURL=esmRepositoryParser.js.map

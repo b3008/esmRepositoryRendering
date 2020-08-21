@@ -8,10 +8,56 @@
         #menu {
             border: solid thick;
         }
+
+        .sourceContainer {
+            margin-top: 40px;
+            border: solid thin;
+            font-family: monospace;
+        }
+
+        .missingProcessorError {
+            color: darkred;
+            font-family: monospace;
+            font-weight: bold;
+            padding: 10px;
+
+        }
+
+        .processedInput {
+            color: darkblue;
+            font-family: monospace;
+            font-weight: bold;
+            padding: 10px;
+
+        }
+
+        .item {
+            margin: 10px;
+            border: solid thin blue;
+            padding: 10px;
+        }
+
+
+        .paperInfoContainer{
+            padding:10px;
+            font-family:sans-serif;
+        }
+
+        .paperTitle{
+            margin-bottom:5px;
+        }
+
+        .paperAuthors{
+            margin-top:0px;
+            font-weight:normal;
+            font-family:serif;
+        }
     </style>
 </head>
 
 <body>
+
+
 
     <select id='menu'></select>
 
@@ -23,12 +69,15 @@
 <script>
 
     let myFetch = (url) => {
+
         return new Promise((resolve, reject) => {
             fetch(url).then(response => response.json()).then(data => {
                 resolve(data);
             }).catch((error) => {
+                console.log("at url", url);
                 reject(error);
             }).catch(error => {
+                console.log("at url", url);
                 reject(error);
             })
         })
@@ -39,33 +88,62 @@
     let menu = document.querySelector("#menu");
     let content = document.querySelector("#citationContent");
 
-    myFetch("/citations").then(result => {
-        console.log(result);
+    myFetch("/citations").then(citations => {
+        
         let options = "";
-        for (let i = 2; i < result.length; i++) {
-            options += `<option value='${i}'>${i}. ${result[i]}</option>`
 
+        let citationKeys = Object.keys(citations);
+        console.log(citations[citationKeys[6]]);
+        debugger;
+
+        for (let i = 2; i < citationKeys.length; i++) {
+            let c = citations[citationKeys[i]]
+            if (i==6) debugger;
+            options += `<option value='${i}'>${i}. ( ${c.errorCount}/${c.items.length} errors  ) -- ${citationKeys[i]}</option>`
         }
         menu.innerHTML = options;
 
-        menu.addEventListener("change", (val) => {
+        menu.addEventListener("input", (val) => {
             console.log(val);
             console.log(menu.value)
-            myFetch(`/citations/${menu.value}`).then((result) => {
+            let citation = citations[citationKeys[menu.value]];
 
-                console.log(result);
-                content.innerHTML += '<div> doi: '+ result.doi + '</div>';
-                if (result.doi) {
-                
-                    console.log(result.doi);
-                    myFetch(`/citations/${menu.value}/bib`).then((bib) => {
-                        let paperInfo = `
-                        <div class="title"> ${bib.entries[0].Fields.title} </div>
-                    `
-                        content.innerHTML += paperInfo;
-                    })
-                }
-            })
+            
+            content.innerHTML = ` 
+            <div> doi: ${citation.doi}</div>
+            <div class="paperInfoContainer"></div>
+            <div class="infoContainer"></div>
+            <div class="renderingContainer"></div>
+            <div class="sourceContainer"></div>
+            
+            `;
+
+            let titleContainer = content.querySelector(".paperInfoContainer");
+            let infoContainer = content.querySelector(".infoContainer");
+            let sourceContainer = content.querySelector(".sourceContainer");
+            let renderingContainer = content.querySelector(".renderingContainer");
+
+
+
+            if (citation.doi) {
+
+                console.log(citation.doi);
+                myFetch(`/citations/${menu.value}/bib`).then((bib) => {
+                    let paperInfo = `
+                    <h3 class="paperTitle"> ${bib.entries[0].Fields.title} </h3>
+                    <h4 class="paperAuthors"> ${bib.entries[0].Fields.author} </h4>
+
+                `
+                    titleContainer.innerHTML += paperInfo;
+                })
+            }
+
+            let finalHTML="";
+            for(let i=0; i<citation.itemParseResults.length; i++){
+                finalHTML += citation.itemParseResults[i].renderHtml
+            }
+            renderingContainer.innerHTML = finalHTML;
+
         })
     })
 
