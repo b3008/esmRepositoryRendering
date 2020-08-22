@@ -45,7 +45,7 @@ csv().fromFile('./DATA_ESM_Item_Repository.csv').then((items) => {
             // console.log(doi);
         }
     }
-    console.log(exports.citations);
+    // console.log(citations);
     // console.log(citations[citationGroups[1]]);
     // let source = generateGroupSource(citations[citationGroups[0]])
     exports.citationKeys = Object.keys(exports.citations);
@@ -54,14 +54,15 @@ csv().fromFile('./DATA_ESM_Item_Repository.csv').then((items) => {
         let errorCount = 0;
         for (let j = 0; j < exports.citations[exports.citationKeys[i]].itemParseResults.length; j++) {
             let parseResult = exports.citations[exports.citationKeys[i]].itemParseResults[j];
-            console.log(parseResult);
+            // console.log(parseResult);
             if (parseResult.hasError) {
                 errorCount++;
             }
         }
         exports.citations[exports.citationKeys[i]].errorCount = errorCount;
     }
-    console.log(exports.citations[exports.citationKeys[6]]);
+    console.log("ready");
+    // console.log(citations[citationKeys[6]]);
     //  console.log(source);
     // resolve();
     // });
@@ -73,7 +74,7 @@ let cleanupDoi = (doi) => {
         result = result.replace(/:/g, '').trim();
         result = '.org/' + result;
     }
-    console.log(doi.length, result.length);
+    // console.log(doi.length, result.length);
     return result;
 };
 exports.generateCitationSource = (citationKey) => {
@@ -84,7 +85,7 @@ let generateGroupSource = (group) => {
     for (let i = 0; i < group.items.length; i++) {
         let item = group.items[i];
         source.push(generateItemSource(item));
-        console.log("------------------------ done");
+        // console.log("------------------------ done")
     }
     return source;
 };
@@ -93,9 +94,10 @@ let generateItemSource = (config) => {
     // console.log(config);
     let errorType = "none";
     if (config.Item.label) {
-        console.log("FOUND X1: ", config);
+        // console.log("FOUND X1: ", config);
         source += `${config.Item.label}\n`;
     }
+    // if(config.Item.label=="wat ben ik aan het doen (voor de piep)?") debugger;
     let result;
     let val;
     let hasError = false;
@@ -110,7 +112,7 @@ let generateItemSource = (config) => {
         source += result;
     }
     else if (config['Response.scale....anchoring']) {
-        console.log(config);
+        // console.log(config);
         result = `${XProcessorModule_1.xProcessor.responseScale(config['Response.scale....anchoring'])}`;
         val = config['Response.scale....anchoring'];
         if (!result) {
@@ -130,7 +132,7 @@ let generateItemSource = (config) => {
         source += result;
     }
     else {
-        console.log(config);
+        // console.log(config);
         hasError = true;
         errorType = "could not identify response scale";
         source += `\n<div class="missingScale"> Could not identify response scale</div>`;

@@ -5,7 +5,7 @@ const X1 = (val) => {
    //    return getHTML("boxgrid", {x:100, y:100, xlabel:"onplezierig-plezierig", ylabel:"passief-actief"})
    // }
    try {
-      console.log(val);
+      // console.log(val);
 
       let type;
       let [range, labels] = val.split("from");
@@ -33,8 +33,10 @@ const X1 = (val) => {
 const responseScale = (val) => {
 
    val = val.trim();
-   console.log("responseScale:", val);
+   // console.log("responseScale:", val);
 
+
+   // if(val.indexOf("categorical")!=-1){}
 
    if( (val.indexOf("1)")!=-1) && (val.indexOf("2)")!=-1)){
       let items = val.split(/.?\)/g); 
@@ -107,10 +109,7 @@ const responseScale = (val) => {
 
       
    
-   console.log(val);
-      // debugger;
-   
-
+   return undefined;
 
 }
 
@@ -120,7 +119,7 @@ const responseScale = (val) => {
 const getHTML = (type: string, params?: any) => {
 
    let getListItems = (list, values?) => {
-      console.log(list);
+      // console.log(list);
       let result = "";
       let v = values || [];
       for (let i = 0; i < list.length; i++) {
@@ -139,11 +138,11 @@ const getHTML = (type: string, params?: any) => {
          return `<aa-slider min="${params.min}" max="${params.max}" max-label="${params.maxLabel}" min-label="${params.minLabel}"></aa-slider>`
 
       case "multiple-choice":
-         console.log(params);
+         // console.log(params);
          return `\n<aa-multiple-choice>${getListItems(params.items, params.values)}\n</aa-multiple-choice>`
 
       case "checkboxes":
-         console.log(params);
+         // console.log(params);
          return `\n<aa-checkboxes>${getListItems(params.items)}\n</aa-checkboxes>`;
 
       case "textfield":
