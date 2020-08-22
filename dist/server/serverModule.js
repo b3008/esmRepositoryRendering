@@ -15,8 +15,8 @@ const execSync = require('child_process').execSync;
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const app = express_1.default();
-const port = 8200;
-const portHttps = 8300;
+const port = 8500;
+const portHttps = 8600;
 // do this for http
 app.listen(port, () => { console.log(`http listening at ${port}`); });
 // app.use(cors);
