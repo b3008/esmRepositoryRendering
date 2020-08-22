@@ -24,6 +24,19 @@ app.get("/citations", (req, res) => {
     // console.log("citations: ", citations);
     res.send(esmRepositoryParser_1.citations);
 });
+app.get("/citationKeys", (req, res) => {
+    // console.log("citations: ", citations);
+    let result = [];
+    for (let i = 0; i < esmRepositoryParser_1.citationKeys.length; i++) {
+        result.push({
+            key: esmRepositoryParser_1.citationKeys[i],
+            errorCount: esmRepositoryParser_1.citations[esmRepositoryParser_1.citationKeys[i]].errorCount,
+            itemCount: esmRepositoryParser_1.citations[esmRepositoryParser_1.citationKeys[i]].items.length,
+            doi: esmRepositoryParser_1.citations[esmRepositoryParser_1.citationKeys[i]].doi || ""
+        });
+    }
+    res.send(result);
+});
 app.get("/citations/:index", (req, res) => {
     res.send(esmRepositoryParser_1.citations[esmRepositoryParser_1.citationKeys[req.params.index]]);
 });

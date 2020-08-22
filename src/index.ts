@@ -24,6 +24,21 @@ app.get("/citations", (req, res) => {
     res.send(citations);
 })
 
+app.get("/citationKeys", (req, res) => {
+    // console.log("citations: ", citations);
+    let result:any = [];
+    for(let i=0; i<citationKeys.length; i++){
+        result.push({
+            key: citationKeys[i],
+            errorCount : citations[citationKeys[i]].errorCount,
+            itemCount: citations[citationKeys[i]].items.length,
+            doi : citations[citationKeys[i]].doi || ""
+        })
+    }
+    res.send(result);
+})
+
+
 app.get("/citations/:index", (req, res) => {
 
     res.send(citations[citationKeys[req.params.index]]);

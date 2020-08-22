@@ -38,19 +38,19 @@
         }
 
 
-        .paperInfoContainer{
-            padding:10px;
-            font-family:sans-serif;
+        .paperInfoContainer {
+            padding: 10px;
+            font-family: sans-serif;
         }
 
-        .paperTitle{
-            margin-bottom:5px;
+        .paperTitle {
+            margin-bottom: 5px;
         }
 
-        .paperAuthors{
-            margin-top:0px;
-            font-weight:normal;
-            font-family:serif;
+        .paperAuthors {
+            margin-top: 0px;
+            font-weight: normal;
+            font-family: serif;
         }
     </style>
 </head>
@@ -58,24 +58,43 @@
 <body>
 
     <div id="welcome">
-        <p>Welcome to the ESM Item Repository Browser.  
+        <p>Welcome to the ESM Item Repository Browser.
             Use the drop-down menu below to select a citation and display the corresponding ESM items
         </p>
 
         <p>
-            The contents displayed here are the result 
-            of programmatically parsing <a href="/esmItemCSV">this ESM Item Repository csv file</a>, 
+            The contents displayed here are the result
+            of programmatically parsing <a href="/esmItemCSV">this ESM Item Repository csv file</a>,
             pulled from <a href="https://osf.io/kg376/">here</a>
             Not all items could be parsed, so some errors are reported as a result.
         </p>
 
         <p>For comments and suggestions please contact <span id='myEmail'></span></p>
-        
+
+    </div>
+
+
+    <!-- <div id="fetching">please wait while fetching menu items</div> -->
+    <select id='menu'>
+    </select>
+
+    <div id="citationContent">
+
+        <div class="paperInfoContainer">
+
+
         </div>
 
-    <select id='menu'></select>
+        <div class="renderingContainer">
+            wtef
 
-    <div id="citationContent"></div>
+        </div>
+
+        <div class="sourceContainer">
+        </div>
+
+
+    </div>
 
 
 
@@ -86,8 +105,8 @@
 
 
     var myself = 'nikolaos.batalas',
-    domain = 'gmail.com',
-    emailElement = document.getElementById('myEmail');
+        domain = 'gmail.com',
+        emailElement = document.getElementById('myEmail');
     emailElement.innerHTML = myself + '@' + domain;
 
     let myFetch = (url) => {
@@ -110,64 +129,139 @@
     let menu = document.querySelector("#menu");
     let content = document.querySelector("#citationContent");
 
-    myFetch("/citations").then(citations => {
+    // var fetchCitations = () => {
+    //     myFetch("/citations").then(citations => {
+
+    //         let options = "";
+
+    //         let citationKeys = Object.keys(citations);
+    //         console.log(citations[citationKeys[6]]);
+
+
+    //         for (let i = 2; i < citationKeys.length; i++) {
+    //             let c = citations[citationKeys[i]]
+    //             if (i == 6) debugger;
+    //             options += `<option value='${i}'>${i}. ( ${c.errorCount}/${c.items.length} errors  ) -- ${citationKeys[i]}</option>`
+    //         }
+    //         menu.innerHTML = options;
+
+    //         menu.addEventListener("input", (val) => {
+    //             console.log(val);
+    //             console.log(menu.value)
+    //             let citation = citations[citationKeys[menu.value]];
+
+
+    //             content.innerHTML = ` 
+    //         <div> doi: ${citation.doi}</div>
+    //         <div class="paperInfoContainer"></div>
+    //         <div class="infoContainer"></div>
+    //         <div class="renderingContainer"></div>
+    //         <div class="sourceContainer"></div>
+            
+    //         `;
+
+    //             let titleContainer = content.querySelector(".paperInfoContainer");
+    //             let infoContainer = content.querySelector(".infoContainer");
+    //             let sourceContainer = content.querySelector(".sourceContainer");
+    //             let renderingContainer = content.querySelector(".renderingContainer");
+
+
+
+    //             if (citation.doi) {
+
+    //                 console.log(citation.doi);
+    //                 myFetch(`/citations/${menu.value}/bib`).then((bib) => {
+    //                     let paperInfo = `
+    //                 <h3 class="paperTitle"> ${bib.entries[0].Fields.title} </h3>
+    //                 <h4 class="paperAuthors"> ${bib.entries[0].Fields.author} </h4>
+
+    //             `
+    //                     titleContainer.innerHTML += paperInfo;
+    //                 })
+    //             }
+
+    //             let finalHTML = "";
+    //             for (let i = 0; i < citation.itemParseResults.length; i++) {
+    //                 finalHTML += citation.itemParseResults[i].renderHtml
+    //             }
+    //             console.log(finalHTML);
+    //             renderingContainer.innerHTML = finalHTML;
+
+    //         })
+    //     })
+
+    // };
+
+
+    var fetchCitationKeys = () => {
         
-        let options = "";
-
-        let citationKeys = Object.keys(citations);
-        console.log(citations[citationKeys[6]]);
-        debugger;
-
-        for (let i = 2; i < citationKeys.length; i++) {
-            let c = citations[citationKeys[i]]
-            if (i==6) debugger;
-            options += `<option value='${i}'>${i}. ( ${c.errorCount}/${c.items.length} errors  ) -- ${citationKeys[i]}</option>`
-        }
-        menu.innerHTML = options;
-
-        menu.addEventListener("input", (val) => {
-            console.log(val);
-            console.log(menu.value)
-            let citation = citations[citationKeys[menu.value]];
-
-            
-            content.innerHTML = ` 
-            <div> doi: ${citation.doi}</div>
-            <div class="paperInfoContainer"></div>
-            <div class="infoContainer"></div>
-            <div class="renderingContainer"></div>
-            <div class="sourceContainer"></div>
-            
-            `;
-
-            let titleContainer = content.querySelector(".paperInfoContainer");
-            let infoContainer = content.querySelector(".infoContainer");
-            let sourceContainer = content.querySelector(".sourceContainer");
-            let renderingContainer = content.querySelector(".renderingContainer");
+        myFetch("/citationKeys").then(citationKeysAndErrors => {
 
 
+            let options = "";
 
-            if (citation.doi) {
+            // let citationKeys = Object.keys(citations);
+            // console.log(citations[citationKeys[6]]);
+            // debugger;
 
-                console.log(citation.doi);
-                myFetch(`/citations/${menu.value}/bib`).then((bib) => {
-                    let paperInfo = `
-                    <h3 class="paperTitle"> ${bib.entries[0].Fields.title} </h3>
-                    <h4 class="paperAuthors"> ${bib.entries[0].Fields.author} </h4>
+            for (let i = 2; i < citationKeysAndErrors.length; i++) {
+                let c = citationKeysAndErrors[i];
 
-                `
-                    titleContainer.innerHTML += paperInfo;
-                })
+                options += `<option value='${i}'>${i}. ( ${c.errorCount}/${c.itemCount} errors  ) -- ${c.key}</option>`
             }
+            menu.innerHTML = options;
 
-            let finalHTML="";
-            for(let i=0; i<citation.itemParseResults.length; i++){
-                finalHTML += citation.itemParseResults[i].renderHtml
-            }
-            renderingContainer.innerHTML = finalHTML;
+            menu.addEventListener("input", (val) => {
+                console.log(val);
+                console.log(menu.value)
 
+                let paperInfoContainer = content.querySelector(".paperInfoContainer");
+                let infoContainer = content.querySelector(".infoContainer");
+                let sourceContainer = content.querySelector(".sourceContainer");
+                let renderingContainer = content.querySelector(".renderingContainer");
+
+                debugger;
+                if (citationKeysAndErrors[menu.value].doi) {
+
+                    // console.log(citation.doi);
+                    myFetch(`/citations/${menu.value}/bib`).then((bib) => {
+                        let paperInfo = `
+                             <h3 class="paperTitle"> ${bib.entries[0].Fields.title} </h3>
+                            <h4 class="paperAuthors"> ${bib.entries[0].Fields.author} </h4>
+
+                            `
+                        // paperInfoContainer.innerHTML += paperInfo;
+                    })
+                }
+
+
+                myFetch(`/citations/${menu.value}`).then(citation => {
+                    debugger;
+         
+
+                  
+
+                    // let citation = citations[citationKeys[menu.value]];
+
+
+                    let finalHTML = "";
+                    for (let i = 0; i < citation.itemParseResults.length; i++) {
+                        finalHTML += citation.itemParseResults[i].renderHtml
+                    }
+
+                    console.log(finalHTML);
+                    renderingContainer.innerHTML = finalHTML;
+
+                });
+            
+
+            })
         })
-    })
+    }
+
+
+
+    fetchCitationKeys();
 
 
 </script>
