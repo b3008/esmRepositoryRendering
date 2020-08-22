@@ -38,4 +38,7 @@ app.get('/citations/:index/html', (req, res) => {
     console.log(source);
     res.send({ html: source });
 });
+app.get("/getCSV", (req, res) => {
+    res.sendFile("DATA_ESM_Item_Repository.csv", { root: "./" });
+});
 //# sourceMappingURL=index.js.map

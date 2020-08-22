@@ -57,7 +57,21 @@
 
 <body>
 
+    <div id="welcome">
+        <p>Welcome to the ESM Item Repository Browser.  
+            Use the drop-down menu below to select a citation and display the corresponding ESM items
+        </p>
 
+        <p>
+            The contents displayed here are the result 
+            of programmatically parsing <a href="/esmItemCSV">this ESM Item Repository csv file</a>, 
+            pulled from <a href="https://osf.io/kg376/">here</a>
+            Not all items could be parsed, so some errors are reported as a result.
+        </p>
+
+        <p>For comments and suggestions please contact <span id='myEmail'></span></p>
+        
+        </div>
 
     <select id='menu'></select>
 
@@ -67,6 +81,11 @@
 
 
 <script>
+
+    var myself = 'nikolaos.batalas',
+    domain = 'gmail.com',
+    emailElement = document.getElementById('myEmail');
+    emailElement.innerHTML = myself + '@' + domain;
 
     let myFetch = (url) => {
 

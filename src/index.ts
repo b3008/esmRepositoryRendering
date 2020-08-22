@@ -43,3 +43,7 @@ app.get('/citations/:index/html', (req, res) => {
 
     res.send({ html: source })
 })
+
+app.get("/esmItemCSV", (req, res)=>{
+    res.sendFile("DATA_ESM_Item_Repository.csv", {root:"./"});
+});
