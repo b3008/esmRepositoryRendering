@@ -98,6 +98,7 @@ let generateItemSource = (config) => {
         source += `${config.Item.label}\n`;
     }
     // if(config.Item.label=="wat ben ik aan het doen (voor de piep)?") debugger;
+    // if(config.Item.label=="geef aan de hand van het affect rooster aan hoe je je nu voelt") debugger;
     let result;
     let val;
     let hasError = false;
@@ -108,6 +109,11 @@ let generateItemSource = (config) => {
             result = `<div class="missingProcessorError">Missing processor for:<br>X.1 = "${config.X[1]}" </div>`;
             hasError = true;
             errorType = "processing X.1 returned undefined";
+        }
+        if (result == "undefined") {
+            result = `<div class="missingProcessorError"> Missing processor for:<br>X.1 = "${config.X[1]}"</div>`;
+            hasError = true;
+            errorType = "missing processor for X.1";
         }
         source += result;
     }
