@@ -21,6 +21,7 @@ csv().fromFile('./DATA_ESM_Item_Repository.csv').then((items) => {
         // let source = generateItemSource(items[i]);
         let citation = items[i][citationKey].split('doi')[0].split("retrieved from osf.io")[0].trim();
         let doi = items[i][citationKey].split('doi')[1];
+        citation = citation.split("https://");
         // console.log(citation.split('doi'))
         if (!citation)
             continue;
@@ -99,6 +100,7 @@ let generateItemSource = (config) => {
     }
     // if(config.Item.label=="wat ben ik aan het doen (voor de piep)?") debugger;
     // if(config.Item.label=="geef aan de hand van het affect rooster aan hoe je je nu voelt") debugger;
+    // if(config.Item.label=="waar ben ik?") debugger;
     let result;
     let val;
     let hasError = false;

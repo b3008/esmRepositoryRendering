@@ -36,7 +36,15 @@ const responseScale = (val) => {
    // console.log("responseScale:", val);
 
 
-   // if(val.indexOf("categorical")!=-1){}
+   if(val.match(/categorical \([0-9]+-[0-9]+\)/)){
+      val = val.replace(/categorical \([0-9]+-[0-9]+\)/, '');
+      if(val.indexOf("categorical (")!=-1){
+         //string is repeating
+         val = val.substr(0, val.indexOf("categorical ("));
+      }
+      let items = val.split(';');
+      return getHTML("multiple-choice", { items})
+   }
 
    if( (val.indexOf("1)")!=-1) && (val.indexOf("2)")!=-1)){
       let items = val.split(/.?\)/g); 
@@ -61,11 +69,11 @@ const responseScale = (val) => {
    }
 
    if (val == "niet 1 2 3 4 5 6 7  zeer") {
-      return getHTML("likert-scale", { items: 7, labels: ['niet', '', '', '', '', '', 'zeer'] })
+      return getHTML("likert-scale", { items:  7, tagStart:"niet", tagEnd:"zeer" })
    }
 
    if (val == "1 (not at all) - 7 (very much)") {
-      return getHTML("likert-scale", { items: 7, labels: ['not at all', '', '', '', '', '', 'very much'] })
+      return getHTML("likert-scale", { items:  7, tagStart:"(not at all)", tagEnd:"(very much)" })
    }
 
    if (val == "ok") {
@@ -118,15 +126,15 @@ const responseScale = (val) => {
 
 const getHTML = (type: string, params?: any) => {
 
-   let getListItems = (list, values?) => {
+   let getListItems = (params) => {
       // console.log(list);
       let result = "";
-      let v = values || [];
-      for (let i = 0; i < list.length; i++) {
+      let v = params.values || [];
+      for (let i = 0; i < params.items.length; i++) {
          if(v[i]){
-            result += `\n\t<aa-choice-item value="${v[i]}">${list[i]}</aa-choice-item>`
+            result += `\n\t<aa-choice-item value="${v[i]}">${params.items[i]}</aa-choice-item>`
          }else{
-            result += `\n\t<aa-choice-item>${list[i]}</aa-choice-item>`
+            result += `\n\t<aa-choice-item>${params.items[i]}</aa-choice-item>`
          }
       }
       return result
@@ -139,17 +147,17 @@ const getHTML = (type: string, params?: any) => {
 
       case "multiple-choice":
          // console.log(params);
-         return `\n<aa-multiple-choice>${getListItems(params.items, params.values)}\n</aa-multiple-choice>`
+         return `\n<aa-multiple-choice horizontal="${params.horizontal || false}">${getListItems(params)}\n</aa-multiple-choice>`
 
       case "checkboxes":
          // console.log(params);
-         return `\n<aa-checkboxes>${getListItems(params.items)}\n</aa-checkboxes>`;
+         return `\n<aa-checkboxes>${getListItems(params)}\n</aa-checkboxes>`;
 
       case "textfield":
          return `\n<aa-text-answer></aa-text-answer>`;
 
       case "likert-scale":
-         return `\n<aa-likert-scale items="7"></aa-likert-scale>`;
+         return `\n<aa-likert-scale items="${params.items}" tag-start="${params.tagStart || ''}" tag-end="${params.tagEnd || ''}" tag-middle="${params.tagMiddle || ''}"></aa-likert-scale>`;
 
       case "button":
          return `\n<div><paper-button>${params.label}</paper-button></div>`;

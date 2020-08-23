@@ -2,11 +2,20 @@
 
     <script type="module" src="https://b3008.github.io/executable_HTML/dist/paper-polymer.js"></script>
     <script type="module" src="https://b3008.github.io/executable_HTML/dist/aaCustomElements.js"></script>
-
+    <!-- <script type="module" src="http://localhost:50261/dist/aaCustomElements.js"></script> -->
 
     <style>
+        body{
+            padding:50px;
+        }
         #menu {
+            margin-top:40px;
             border: solid thick;
+        }
+
+        .renderingContainer{
+            font-family: Roboto, Noto, sans-serif;
+            font-size:16px;
         }
 
         .sourceContainer {
@@ -20,6 +29,7 @@
             font-family: monospace;
             font-weight: bold;
             padding: 10px;
+            font-size:14px;
 
         }
 
@@ -28,6 +38,7 @@
             font-family: monospace;
             font-weight: bold;
             padding: 10px;
+            font-size:14px;
 
         }
 
@@ -35,6 +46,9 @@
             margin: 10px;
             border: solid thin blue;
             padding: 10px;
+            /* width:450px; */
+            width:0px auto;
+            max-width:700px;
         }
 
 
@@ -225,7 +239,7 @@
                 let sourceContainer = content.querySelector(".sourceContainer");
                 let renderingContainer = content.querySelector(".renderingContainer");
 
-                debugger;
+
                 if (citationKeysAndErrors[menu.value].doi) {
 
                     // console.log(citation.doi);
@@ -235,13 +249,13 @@
                             <h4 class="paperAuthors"> ${bib.entries[0].Fields.author} </h4>
 
                             `
-                        // paperInfoContainer.innerHTML += paperInfo;
+                        paperInfoContainer.innerHTML += paperInfo;
                     })
                 }
 
 
                 myFetch(`/citations/${menu.value}`).then(citation => {
-                    debugger;
+         
          
 
                   

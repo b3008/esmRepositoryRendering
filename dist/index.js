@@ -18,6 +18,10 @@ const clientModule_1 = require("./client/clientModule");
 //     debugger;
 // })
 app.get("/", (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
     res.sendFile("index.html", { root: "./files" });
 });
 app.get("/citations", (req, res) => {
