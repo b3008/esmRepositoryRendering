@@ -77,11 +77,11 @@ const responseScale = (val) => {
    }
 
    if (val == "niet 1 2 3 4 5 6 7  zeer") {
-      return getHTML("likert-scale", { items:  7, tagStart:"niet", tagEnd:"zeer" })
+      return getHTML("likert-scale", { items:  7, startLabel:"niet", endLabel:"zeer" })
    }
 
    if (val == "1 (not at all) - 7 (very much)") {
-      return getHTML("likert-scale", { items:  7, tagStart:"(not at all)", tagEnd:"(very much)" })
+      return getHTML("likert-scale", { items:  7, startLabel:"(not at all)", endLabel:"(very much)" })
    }
 
    if (val == "ok") {
@@ -165,7 +165,7 @@ const getHTML = (type: string, params?: any) => {
          return `\n<aa-text-answer class="aa-item"></aa-text-answer>`;
 
       case "likert-scale":
-         return `\n<aa-likert-scale class="aa-item" items="${params.items}" tag-start="${params.tagStart || ''}" tag-end="${params.tagEnd || ''}" tag-middle="${params.tagMiddle || ''}"></aa-likert-scale>`;
+         return `\n<aa-likert-scale class="aa-item" items="${params.items}" start-label="${params.startLabel || ''}" end-label="${params.endLabel || ''}" middle-label="${params.middleLabel || ''}"></aa-likert-scale>`;
 
       case "button":
          return `\n<div><paper-button>${params.label}</paper-button></div>`;

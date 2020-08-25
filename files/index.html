@@ -1,8 +1,8 @@
 <head>
 
     <script type="module" src="https://b3008.github.io/executable_HTML/dist/paper-polymer.js"></script>
-    <script type="module" src="https://b3008.github.io/executable_HTML/dist/aaCustomElements.js"></script>
-    <!-- <script type="module" src="http://localhost:64931/dist/aaCustomElements.js"></script> -->
+    <!-- <script type="module" src="https://b3008.github.io/executable_HTML/dist/aaCustomElements.js"></script> -->
+    <script type="module" src="http://localhost:64931/dist/aaCustomElements.js"></script>
 
     <style>
         body{
@@ -73,6 +73,12 @@
         }
         .yaml{
             font-size:10px;
+        }
+
+        .html{
+            font-size:10px;
+            word-wrap:normal;
+            white-space:pre-wrap;
         }
 
     </style>
@@ -305,19 +311,25 @@
     let createYAMLAndJSONContaiener = (item)=>{
         let yaml = item.toYAML();
         let json = JSON.stringify(item.toJSON(),null,2);
+        item.classList.remove("aa-item");
+        let html = item.outerHTML;
         let result =`
             <div style="display:flex; justify-content:space-between; border-top:solid thin lightgray; background-color:#DDD; padding:10px">
-                <div>as JSON:
-                    <pre class="json">${json}</pre>
+                <div style="padding:10px;"> as YAML:
+                    <pre class="yaml">${yaml}</pre>
                 </div>
 
-                <div> as YAML:
-                    <pre class="yaml">${yaml}</pre>
+
+                <div style="padding:10px;"> as HTML:
+                    <pre class="html"></pre>
                 </div>
             </div>
         `
         let child = document.createElement("div");
         child.innerHTML = result;
+        let h = child.querySelectorAll(".html")[0];
+        h.innerText = html;
+        
         return child;
     }
 
