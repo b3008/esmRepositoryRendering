@@ -148,7 +148,7 @@ let generateItemSource = (config) => {
     let val;
     let hasError= false;
 
-    if (config.X[1]) {
+    if ((config.X[1])&&(config.X[1]!='n.a.')) {
         
         result = `${xProcessor.X1(config.X[1])}`;
         val = config.X[1];

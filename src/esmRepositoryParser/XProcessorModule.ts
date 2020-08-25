@@ -4,6 +4,14 @@ const X1 = (val) => {
    // if(val=='2d grid: x-axis 0-100 (onplezierig-plezierig); y-axis 0-100 (passief-actief)'){
    //    return getHTML("boxgrid", {x:100, y:100, xlabel:"onplezierig-plezierig", ylabel:"passief-actief"})
    // }
+
+   if( (val===`slider ranging from "unhappy" (0; unzufrieden) over "neutral" (5; neutral) to very happy (10; sehr zufrieden)`)||
+   (val==`slider from very unhappy (0; sehr unzufrieden) over "neutral" (5; neutral) to "very happy" (10; sehr zufrieden)`)){
+
+      return getHTML("slider", {minLabel:"unzufrieden", maxLabel:"zufrieden", min:0, max:10})
+   }
+
+
    try {
       // console.log(val);
 
