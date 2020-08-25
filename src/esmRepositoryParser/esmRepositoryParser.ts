@@ -161,7 +161,10 @@ let generateItemSource = (config) => {
             result = `<div class="missingProcessorError"> Missing processor for:<br>X.1 = "${config.X[1]}"</div>`
             hasError = true;
             errorType = "missing processor for X.1"
-        } 
+        } else{
+            result += `\n<div class="processedInput"> Processed input was:<br>"${config.X[1]}"</div>`
+            hasError = false;
+        }
         source +=result
     } else if (config['Response.scale....anchoring']) {
         // console.log(config);
