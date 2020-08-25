@@ -151,21 +151,21 @@ const getHTML = (type: string, params?: any) => {
 
    switch (type) {
       case "slider":
-         return `<aa-slider min="${params.min}" max="${params.max}" max-label="${params.maxLabel}" min-label="${params.minLabel}"></aa-slider>`
+         return `<aa-slider class="aa-item" min="${params.min}" max="${params.max}" max-label="${params.maxLabel}" min-label="${params.minLabel}"></aa-slider>`
 
       case "multiple-choice":
          // console.log(params);
-         return `\n<aa-multiple-choice horizontal="${params.horizontal || false}">${getListItems(params)}\n</aa-multiple-choice>`
+         return `\n<aa-multiple-choice class="aa-item" horizontal="${params.horizontal || false}">${getListItems(params)}\n</aa-multiple-choice>`
 
       case "checkboxes":
          // console.log(params);
-         return `\n<aa-checkboxes>${getListItems(params)}\n</aa-checkboxes>`;
+         return `\n<aa-checkboxes class="aa-item">${getListItems(params)}\n</aa-checkboxes>`;
 
       case "textfield":
-         return `\n<aa-text-answer></aa-text-answer>`;
+         return `\n<aa-text-answer class="aa-item"></aa-text-answer>`;
 
       case "likert-scale":
-         return `\n<aa-likert-scale items="${params.items}" tag-start="${params.tagStart || ''}" tag-end="${params.tagEnd || ''}" tag-middle="${params.tagMiddle || ''}"></aa-likert-scale>`;
+         return `\n<aa-likert-scale class="aa-item" items="${params.items}" tag-start="${params.tagStart || ''}" tag-end="${params.tagEnd || ''}" tag-middle="${params.tagMiddle || ''}"></aa-likert-scale>`;
 
       case "button":
          return `\n<div><paper-button>${params.label}</paper-button></div>`;

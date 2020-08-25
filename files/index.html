@@ -1,8 +1,8 @@
 <head>
 
     <script type="module" src="https://b3008.github.io/executable_HTML/dist/paper-polymer.js"></script>
-    <script type="module" src="https://b3008.github.io/executable_HTML/dist/aaCustomElements.js"></script>
-    <!-- <script type="module" src="http://localhost:50261/dist/aaCustomElements.js"></script> -->
+    <!-- <script type="module" src="https://b3008.github.io/executable_HTML/dist/aaCustomElements.js"></script> -->
+    <script type="module" src="http://localhost:64931/dist/aaCustomElements.js"></script>
 
     <style>
         body{
@@ -66,6 +66,15 @@
             font-weight: normal;
             font-family: serif;
         }
+
+        .json{
+            font-size:10px;
+
+        }
+        .yaml{
+            font-size:10px;
+        }
+
     </style>
 </head>
 
@@ -271,6 +280,19 @@
                     console.log(finalHTML);
                     renderingContainer.innerHTML = finalHTML;
 
+
+                    //for each of the itesm show json and yaml
+                    let items = renderingContainer.querySelectorAll('.item')
+                    for(let i=0; i<items.length; i++){
+                        console.log(items[i]);
+                        let aaItem = items[i].querySelectorAll('.aa-item')[0];
+                        console.log(aaItem);
+
+                        if(aaItem){
+                            items[i].appendChild(createYAMLAndJSONContaiener(aaItem));
+                        }
+                    }
+
                 });
             
 
@@ -278,6 +300,26 @@
         })
     }
 
+
+
+    let createYAMLAndJSONContaiener = (item)=>{
+        let yaml = item.toYAML();
+        let json = JSON.stringify(item.toJSON(),null,2);
+        let result =`
+            <div style="display:flex; justify-content:space-between; border-top:solid thin lightgray; background-color:#DDD; padding:10px">
+                <div>as JSON:
+                    <pre class="json">${json}</pre>
+                </div>
+
+                <div> as YAML:
+                    <pre class="yaml">${yaml}</pre>
+                </div>
+            </div>
+        `
+        let child = document.createElement("div");
+        child.innerHTML = result;
+        return child;
+    }
 
 
     fetchCitationKeys();
