@@ -33,6 +33,15 @@ export var dois: any = {};
 
         // console.log(jsonResult);
 
+
+        /**
+         * iterate over each row and group items per citation
+         * the result is an object with citations as keys
+         * 
+         * each citation key contains items:[], which is an array of response items 
+         * and doi:<string>, which is the paper's formatted as a url doi (if it exists)
+         */
+
         let knownCitations: any = [];
 
         for (let i = 0; i < items.length; i++) {
@@ -41,6 +50,7 @@ export var dois: any = {};
 
 
             // let source = generateItemSource(items[i]);
+            // debugger;
             let citation = items[i][citationKey].split('doi')[0].split("retrieved from osf.io")[0].trim();
             let doi = items[i][citationKey].split('doi')[1];
             citation = citation.split("https://");
@@ -65,19 +75,21 @@ export var dois: any = {};
                     finalDoi = undefined;
                 }
                 citations[citation] = { items: [items[i]], doi: finalDoi};
-                // console.log(citation);
-                // console.log(doi);
             }
         }
 
-        // console.log(citations);
-        // console.log(citations[citationGroups[1]]);
-
-        // let source = generateGroupSource(citations[citationGroups[0]])
+        /**
+         * generate itemParseResults, which is an array of objects
+         *  containing 
+         *      html: the  original text for the repsonse item
+         *      renderHtml : the majime components html source
+         *      hasError: whether there was an error trying to produce renderHtml
+         *      errorType: the type of error
+         */
 
         citationKeys = Object.keys(citations);
         for(let i=0; i<citationKeys.length; i++){
-            citations[citationKeys[i]].itemParseResults = generateCitationSource(citationKeys[i]); 
+            citations[citationKeys[i]].itemParseResults = generateCitationSource(citations[citationKeys[i]]); 
             let errorCount = 0; 
             for(let j=0; j< citations[citationKeys[i]].itemParseResults.length; j++){
                 let parseResult = citations[citationKeys[i]].itemParseResults[j];
@@ -85,18 +97,14 @@ export var dois: any = {};
                 if(parseResult.hasError){ errorCount++;}
             }
             citations[citationKeys[i]].errorCount = errorCount;
+
+            console.log( citations[citationKeys[i]].itemParseResults )
         }
 
         console.log("ready");
-        // console.log(citations[citationKeys[6]]);
 
-        //  console.log(source);
-
-        // resolve();
-
-    // });
 })
-// }
+
 
 let cleanupDoi = (doi)=>{
     let result =  doi.replace(/\uFFA0/g, '').trim();
@@ -106,20 +114,16 @@ let cleanupDoi = (doi)=>{
         result = '.org/' + result;
     }
     
-
-    // console.log(doi.length, result.length);
     return result;
 }
 
 
-export let generateCitationSource = (citationKey) =>{
-    return generateGroupSource(citations[citationKey]);
-}
 
-let generateGroupSource = (group) => {
+
+export var generateCitationSource = (citation) => {
     let source:any = [];
-    for (let i = 0; i < group.items.length; i++) {
-        let item = group.items[i];
+    for (let i = 0; i < citation.items.length; i++) {
+        let item = citation.items[i];
         source.push(generateItemSource(item));
         // console.log("------------------------ done")
     }
@@ -129,6 +133,12 @@ let generateGroupSource = (group) => {
 }
 
 let generateItemSource = (config) => {
+
+    // console.log(Object.keys(config));
+    console.log(config.Conditional.branching)
+
+
+    
     let source = "";
     // console.log(config);
 
@@ -144,10 +154,15 @@ let generateItemSource = (config) => {
     // if(config.Item.label=="geef aan de hand van het affect rooster aan hoe je je nu voelt") debugger;
     // if(config.Item.label=="waar ben ik?") debugger;
     
+
+    
     let result;
     let val;
     let hasError= false;
 
+    
+    // result stores comments about parsing that are displayed alongside the response item in HTML
+    
     if ((config.X[1])&&(config.X[1]!='n.a.')) {
         
         result = `${xProcessor.X1(config.X[1])}`;
@@ -185,7 +200,12 @@ let generateItemSource = (config) => {
         }
         source += result;
 
-    } else {
+    } else if(config.Conditional.branching) {
+        // debugger;
+        
+    }
+    
+    else {
         // console.log(config);
         hasError=true;
         errorType = "could not identify response scale"

@@ -16,9 +16,17 @@ exports.dois = {};
 // return new Promise((resolve, reject)=> {
 csv().fromFile('./DATA_ESM_Item_Repository.csv').then((items) => {
     // console.log(jsonResult);
+    /**
+     * iterate over each row and group items per citation
+     * the result is an object with citations as keys
+     *
+     * each citation key contains items:[], which is an array of response items
+     * and doi:<string>, which is the paper's formatted as a url doi (if it exists)
+     */
     let knownCitations = [];
     for (let i = 0; i < items.length; i++) {
         // let source = generateItemSource(items[i]);
+        // debugger;
         let citation = items[i][citationKey].split('doi')[0].split("retrieved from osf.io")[0].trim();
         let doi = items[i][citationKey].split('doi')[1];
         citation = citation.split("https://");
@@ -42,16 +50,19 @@ csv().fromFile('./DATA_ESM_Item_Repository.csv').then((items) => {
                 finalDoi = undefined;
             }
             exports.citations[citation] = { items: [items[i]], doi: finalDoi };
-            // console.log(citation);
-            // console.log(doi);
         }
     }
-    // console.log(citations);
-    // console.log(citations[citationGroups[1]]);
-    // let source = generateGroupSource(citations[citationGroups[0]])
+    /**
+     * generate itemParseResults, which is an array of objects
+     *  containing
+     *      html: the  original text for the repsonse item
+     *      renderHtml : the majime components html source
+     *      hasError: whether there was an error trying to produce renderHtml
+     *      errorType: the type of error
+     */
     exports.citationKeys = Object.keys(exports.citations);
     for (let i = 0; i < exports.citationKeys.length; i++) {
-        exports.citations[exports.citationKeys[i]].itemParseResults = exports.generateCitationSource(exports.citationKeys[i]);
+        exports.citations[exports.citationKeys[i]].itemParseResults = exports.generateCitationSource(exports.citations[exports.citationKeys[i]]);
         let errorCount = 0;
         for (let j = 0; j < exports.citations[exports.citationKeys[i]].itemParseResults.length; j++) {
             let parseResult = exports.citations[exports.citationKeys[i]].itemParseResults[j];
@@ -61,36 +72,30 @@ csv().fromFile('./DATA_ESM_Item_Repository.csv').then((items) => {
             }
         }
         exports.citations[exports.citationKeys[i]].errorCount = errorCount;
+        console.log(exports.citations[exports.citationKeys[i]].itemParseResults);
     }
     console.log("ready");
-    // console.log(citations[citationKeys[6]]);
-    //  console.log(source);
-    // resolve();
-    // });
 });
-// }
 let cleanupDoi = (doi) => {
     let result = doi.replace(/\uFFA0/g, '').trim();
     if (result[0] == ':') {
         result = result.replace(/:/g, '').trim();
         result = '.org/' + result;
     }
-    // console.log(doi.length, result.length);
     return result;
 };
-exports.generateCitationSource = (citationKey) => {
-    return generateGroupSource(exports.citations[citationKey]);
-};
-let generateGroupSource = (group) => {
+exports.generateCitationSource = (citation) => {
     let source = [];
-    for (let i = 0; i < group.items.length; i++) {
-        let item = group.items[i];
+    for (let i = 0; i < citation.items.length; i++) {
+        let item = citation.items[i];
         source.push(generateItemSource(item));
         // console.log("------------------------ done")
     }
     return source;
 };
 let generateItemSource = (config) => {
+    // console.log(Object.keys(config));
+    console.log(config.Conditional.branching);
     let source = "";
     // console.log(config);
     let errorType = "none";
@@ -104,6 +109,7 @@ let generateItemSource = (config) => {
     let result;
     let val;
     let hasError = false;
+    // result stores comments about parsing that are displayed alongside the response item in HTML
     if ((config.X[1]) && (config.X[1] != 'n.a.')) {
         result = `${XProcessorModule_1.xProcessor.X1(config.X[1])}`;
         val = config.X[1];
@@ -142,6 +148,9 @@ let generateItemSource = (config) => {
             hasError = false;
         }
         source += result;
+    }
+    else if (config.Conditional.branching) {
+        // debugger;
     }
     else {
         // console.log(config);

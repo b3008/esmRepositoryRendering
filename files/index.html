@@ -255,16 +255,35 @@
                 let renderingContainer = content.querySelector(".renderingContainer");
 
 
+                paperInfoContainer.innerHTML = `<div> ${citationKeysAndErrors[menu.value].key}</div>
+                <div><button id="searchScholar">search scholar</button></div>
+                        <div><textarea rows="10" cols="80" type="textarea" id="bibTextArea"></textarea></div>
+                        <button id="submitbib">submitbib</button>
+                `;
+
+                let bibTextArea = paperInfoContainer.querySelector('#bibTextArea');
+
+                let submitbib = paperInfoContainer.querySelector('#submitbib');
+                submitbib.addEventListener("click", ()=>{
+                    console.log(bibTextArea.value);
+                })
+
                 if (citationKeysAndErrors[menu.value].doi) {
 
                     // console.log(citation.doi);
                     myFetch(`/citations/${menu.value}/bib`).then((bib) => {
                         let paperInfo = `
+                            <div class="citation">
                              <h3 class="paperTitle"> ${bib.entries[0].Fields.title} </h3>
                             <h4 class="paperAuthors"> ${bib.entries[0].Fields.author} </h4>
 
                             `
-                        paperInfoContainer.innerHTML = paperInfo;
+                        paperInfoContainer.innerHTML += paperInfo;
+
+                        let bibTextArea = paperInfoContainer.querySelector('#bibTextArea');
+                        bibTextArea.value = JSON.stringify(bib.entries[0], null, 4);
+
+
                     })
                 }
 

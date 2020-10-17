@@ -4,7 +4,11 @@ let app = require("./server/serverModule").app;
 
 import { citations, citationKeys,  generateCitationSource } from "./esmRepositoryParser/esmRepositoryParser";
 import { getBib } from "./client/clientModule";
+import { fstat } from "fs";
 
+
+const puppeteer = require('puppeteer');
+const fs = require('fs');
 // doParsing();
 
 
@@ -57,7 +61,7 @@ app.get('/citations/:index/bib', async(req, res) => {
 
 app.get('/citations/:index/html', (req, res) => {
     console.log(citations);
-    let source = generateCitationSource(citationKeys[req.params.index])
+    let source = generateCitationSource(citations[citationKeys[req.params.index]])
     console.log(source);
 
     res.send({ html: source })
@@ -66,3 +70,38 @@ app.get('/citations/:index/html', (req, res) => {
 app.get("/esmItemCSV", (req, res)=>{
     res.sendFile("DATA_ESM_Item_Repository.csv", {root:"./"});
 });
+
+
+app.get("/searchGoogleScholar/:string", (req, res)=>{
+
+})
+
+
+
+app.post('/saveBib', (req, res)=>{
+    let bib = req.body.bib;
+    let index = req.body.index;
+
+    let d = fs.readFileSync("esmItemRepository.json");
+    try{
+
+        let items = JSON.parse(d.toString());
+        let item = items[index] || citations[citationKeys[req.params.index]];
+        item.bib = bib;
+        items[index] = item;
+
+        fs.writeFileSync("esmItemRepository.json", JSON.stringify(items));
+
+    }catch(e){
+        let items = {};
+        items[index] = citations[citationKeys[req.params.index]];
+        items[index].bib = bib;
+        fs.writeFileSync("esmItemRepository.json", JSON.stringify(items));
+    }
+
+        
+})
+
+
+
+

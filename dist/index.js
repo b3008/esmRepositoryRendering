@@ -12,6 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 let app = require("./server/serverModule").app;
 const esmRepositoryParser_1 = require("./esmRepositoryParser/esmRepositoryParser");
 const clientModule_1 = require("./client/clientModule");
+const puppeteer = require('puppeteer');
+const fs = require('fs');
 // doParsing();
 // getBib("https://www.doi2bib.org/2/doi2bib?id=10.1037/abn0000229").then((result) => {
 //     console.log(result)
@@ -51,11 +53,31 @@ app.get('/citations/:index/bib', (req, res) => __awaiter(void 0, void 0, void 0,
 }));
 app.get('/citations/:index/html', (req, res) => {
     console.log(esmRepositoryParser_1.citations);
-    let source = esmRepositoryParser_1.generateCitationSource(esmRepositoryParser_1.citationKeys[req.params.index]);
+    let source = esmRepositoryParser_1.generateCitationSource(esmRepositoryParser_1.citations[esmRepositoryParser_1.citationKeys[req.params.index]]);
     console.log(source);
     res.send({ html: source });
 });
 app.get("/esmItemCSV", (req, res) => {
     res.sendFile("DATA_ESM_Item_Repository.csv", { root: "./" });
+});
+app.get("/searchGoogleScholar/:string", (req, res) => {
+});
+app.post('/saveBib', (req, res) => {
+    let bib = req.body.bib;
+    let index = req.body.index;
+    let d = fs.readFileSync("esmItemRepository.json");
+    try {
+        let items = JSON.parse(d.toString());
+        let item = items[index] || esmRepositoryParser_1.citations[esmRepositoryParser_1.citationKeys[req.params.index]];
+        item.bib = bib;
+        items[index] = item;
+        fs.writeFileSync("esmItemRepository.json", JSON.stringify(items));
+    }
+    catch (e) {
+        let items = {};
+        items[index] = esmRepositoryParser_1.citations[esmRepositoryParser_1.citationKeys[req.params.index]];
+        items[index].bib = bib;
+        fs.writeFileSync("esmItemRepository.json", JSON.stringify(items));
+    }
 });
 //# sourceMappingURL=index.js.map
